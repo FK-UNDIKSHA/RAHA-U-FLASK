@@ -120,6 +120,18 @@ class Pengguna(db.Model):
     def __repr__(self):
         return str(self.role)
 
+class DoctorQueue(db.Model):
+    __tablename__ = 'DoctorQueue'
+
+    id               = db.Column(db.Integer, primary_key=True)
+    username         = db.Column(db.Text(16000000))
+    userdokter       = db.Column(db.Text(16000000))
+    timestampStart   = db.Column(db.Text(16000000))
+    timestampEnd     = db.Column(db.Text(16000000))
+
+class PaymentQueue(db.Model):
+    pass
+
 #Tabel Relasi
 class UserRoles(db.Model):
     __tablename__ = 'user_roles'
