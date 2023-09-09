@@ -2,6 +2,7 @@
 """
 Copyright (c) 2019 - present AppSeed.us
 """
+import datetime
 
 from flask_login import UserMixin
 
@@ -20,6 +21,7 @@ class Users(db.Model, UserMixin):
     username      = db.Column(db.String(64), unique=True)
     email         = db.Column(db.String(64), unique=True)
     password      = db.Column(db.LargeBinary)
+    role          = db.relationship('Roles', secondary='user_roles')
 
     oauth_github  = db.Column(db.String(100), nullable=True)
 
@@ -74,6 +76,57 @@ class Users(db.Model, UserMixin):
             raise InvalidUsage(error, 422)
         return
 
+class Roles(db.Model):
+    __tablename__ = 'roles'
+
+    id              = db.Column(db.Integer, primary_key=True)
+    role            = db.Column(db.String(255), unique=True)
+
+    def __repr__(self):
+        return str(self.role)
+
+
+class Dokter(db.Model):
+    __tablename__ = 'dokter'
+
+    id              = db.Column(db.Integer, primary_key=True)
+    nama            = db.Column(db.Text(16000000), unique=True)
+    username        = db.Column(db.Text(255), unique=True)
+    nik             = db.Column(db.String(255), unique=True)
+    no_str          = db.Column(db.String(255), unique=True)
+    alamat          = db.Column(db.Text(16000000))
+    no_hp           = db.Column(db.String(255))
+    imaji           = db.Column(db.Text(16000000))
+    created_at      = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+
+    def __repr__(self):
+        return str(self.username)
+
+
+class Pengguna(db.Model):
+    __tablename__ = 'pengguna'
+
+    id              = db.Column(db.Integer, primary_key=True)
+    nama            = db.Column(db.Text(16000000), unique=True)
+    username        = db.Column(db.Text(255), unique=True)
+    nik             = db.Column(db.String(255), unique=True)
+    #no_str          = db.Column(db.String(255), unique=True)
+    no_hp           = db.Column(db.String(255))
+    alamat          = db.Column(db.Text(16000000))
+    imaji           = db.Column(db.Text(16000000))
+    created_at      = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def __repr__(self):
+        return str(self.role)
+
+#Tabel Relasi
+class UserRoles(db.Model):
+    __tablename__ = 'user_roles'
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.id', ondelete='CASCADE'))
+    role_id = db.Column(db.Integer(), db.ForeignKey('roles.id', ondelete='CASCADE'))
+
 @login_manager.user_loader
 def user_loader(id):
     return Users.query.filter_by(id=id).first()
@@ -85,5 +138,6 @@ def request_loader(request):
     return user if user else None
 
 class OAuth(OAuthConsumerMixin, db.Model):
+    #Many to one relation?
     user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="cascade"), nullable=False)
     user = db.relationship(Users)

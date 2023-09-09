@@ -13,8 +13,8 @@ from flask_dance.contrib.github import github
 
 from apps import db, login_manager
 from apps.authentication import blueprint
-from apps.authentication.forms import LoginForm, CreateAccountForm
-from apps.authentication.models import Users
+from apps.authentication.forms import LoginForm, DoctorAccountForm
+from apps.authentication.models import Users, Pengguna, Dokter
 
 from apps.authentication.util import verify_pass
 
@@ -74,11 +74,12 @@ def login():
 
 @blueprint.route('/register', methods=['GET', 'POST'])
 def register():
-    create_account_form = CreateAccountForm(request.form)
+    create_account_form = DoctorAccountForm(request.form)
     if 'register' in request.form:
 
         username = request.form['username']
         email = request.form['email']
+        role = 'user'
 
         # Check usename exists
         user = Users.query.filter_by(username=username).first()
@@ -98,7 +99,12 @@ def register():
 
         # else we can create the user
         user = Users(**request.form)
-        db.session.add(user)
+        if role == 'user':
+            pengguna = Pengguna(**request.form)
+            db.session.bulk_save_objects([user, pengguna])
+        elif role == 'dokter':
+            dokter = Dokter(**request.form)
+            db.session.bulk_save_objects([user, dokter])
         db.session.commit()
 
         # Delete user from session

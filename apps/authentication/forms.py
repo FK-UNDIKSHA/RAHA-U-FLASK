@@ -19,7 +19,7 @@ class LoginForm(FlaskForm):
                              validators=[DataRequired()])
 
 
-class CreateAccountForm(FlaskForm):
+class DoctorAccountForm(FlaskForm):
     username = StringField('Username',
                          id='username_create',
                          validators=[DataRequired()])
@@ -29,3 +29,29 @@ class CreateAccountForm(FlaskForm):
     password = PasswordField('Password',
                              id='pwd_create',
                              validators=[DataRequired()])
+    nama = StringField('Nama',
+                         id='Nama_create',
+                         validators=[DataRequired()])
+    nik = StringField('Nik',
+                         id='Nik_create',
+                         validators=[DataRequired()])
+    no_str = StringField('No_str',
+                         id='No_str_create',
+                         validators=[DataRequired()])
+    alamat = StringField('Alamat',
+                         id='Alamat_create',
+                         validators=[DataRequired()])
+
+class DoctorProfileForm(FlaskForm):
+    nama = StringField('Nama',
+                         id='Nama_create',
+                         validators=[DataRequired()])
+    nik = StringField('Nik',
+                         id='Nik_create',
+                         validators=[DataRequired()])
+    no_str = StringField('No_str',
+                         id='No_str_create',
+                         validators=[DataRequired()])
+    alamat = StringField('Alamat',
+                         id='Alamat_create',
+                         validators=[DataRequired()])
